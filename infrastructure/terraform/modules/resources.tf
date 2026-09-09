@@ -81,10 +81,8 @@ resource "null_resource" "worker_deploy" {
 resource "cloudflare_workers_custom_domain" "npm_registry" {
   depends_on = [null_resource.worker_deploy]
 
-  account_id  = var.account_id
-  zone_id     = var.zone_id
-  hostname    = var.domain
-  service     = var.name_prefix
-  environment = "production"
-  # Note: cloudflare_workers_domain was removed in v5, use custom_domain instead
+  account_id = var.account_id
+  zone_id    = var.zone_id
+  hostname   = var.domain
+  service    = var.name_prefix
 }
