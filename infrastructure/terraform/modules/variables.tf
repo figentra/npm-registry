@@ -53,6 +53,12 @@ variable "zone_id" {
   type        = string
 }
 
+variable "cloudflare_api_token" {
+  description = "Cloudflare API Token for worker deployment"
+  type        = string
+  sensitive   = true
+}
+
 # Optional Variables
 variable "environment" {
   description = "Environment: development, staging, production"

@@ -47,15 +47,17 @@ provider "cloudflare" {
 module "npm_registry" {
   source = "./modules"
 
-  account_id         = var.cloudflare_account_id
-  account_name       = "Figentra Technologies L.L.C"
-  name               = "npm-registry"
-  domain             = "npm.figentra.com"
-  zone_id            = var.cloudflare_zone_id
-  environment        = "production"
-  d1_location        = "ENAM"
-  r2_location        = "ENAM"
-  enable_replication = false
+  account_id           = var.cloudflare_account_id
+  account_name         = "Figentra Technologies L.L.C"
+  name                 = "npm-registry"
+  name_prefix          = "npm-registry"
+  domain               = "npm.figentra.com"
+  zone_id              = var.cloudflare_zone_id
+  cloudflare_api_token = var.cloudflare_api_token
+  environment          = "production"
+  d1_location          = "ENAM"
+  r2_location          = "ENAM"
+  enable_replication   = false
   
   tags = {
     Team        = "Platform"
