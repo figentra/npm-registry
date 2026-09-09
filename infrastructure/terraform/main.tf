@@ -45,7 +45,7 @@ provider "cloudflare" {
  * Creates all resources for the private npm registry.
  */
 module "npm_registry" {
-  source = "./modules/npm-registry"
+  source = "./modules"
 
   account_id         = var.cloudflare_account_id
   account_name       = "Figentra Technologies L.L.C"
