@@ -34,10 +34,10 @@ output "r2_bucket_name" {
   value       = cloudflare_r2_bucket.npm_packages.name
 }
 
-# output "worker_domain_id" {
-#   description = "Worker domain ID"
-#   value       = cloudflare_workers_domain.npm_registry.id
-# }
+output "worker_domain_id" {
+  description = "Worker domain ID"
+  value       = cloudflare_workers_domain.npm_registry.id
+}
 
 output "worker_bindings" {
   description = "Worker bindings configuration for wrangler.toml"

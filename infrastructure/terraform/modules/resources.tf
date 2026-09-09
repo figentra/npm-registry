@@ -47,12 +47,10 @@ resource "cloudflare_r2_bucket" "npm_packages" {
 #===============================================================================
 # WORKER DOMAIN
 #===============================================================================
-# 
-# Uncomment when DNS zone is properly configured:
-#
-# resource "cloudflare_workers_domain" "npm_registry" {
-#   account_id = var.account_id
-#   hostname   = var.domain
-#   service    = var.name_prefix
-#   zone_id    = var.zone_id
-# }
+
+resource "cloudflare_workers_domain" "npm_registry" {
+  account_id = var.account_id
+  hostname   = var.domain
+  service    = var.name_prefix
+  zone_id    = var.zone_id
+}
