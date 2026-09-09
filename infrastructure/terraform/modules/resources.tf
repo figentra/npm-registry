@@ -35,16 +35,24 @@ resource "cloudflare_d1_database" "npm_registry" {
 resource "cloudflare_r2_bucket" "npm_packages" {
   account_id = var.account_id
   name       = "${var.name_prefix}-packages"
-  location   = var.r2_location
+  # Note: Location is auto-assigned by Cloudflare based on account
+  # Using lifecycle ignore to prevent perpetual diff
+  lifecycle {
+    ignore_changes = [
+      location
+    ]
+  }
 }
 
 #===============================================================================
 # WORKER DOMAIN
 #===============================================================================
-
-resource "cloudflare_workers_domain" "npm_registry" {
-  account_id = var.account_id
-  hostname   = var.domain
-  service    = var.name_prefix
-  zone_id    = var.zone_id
-}
+# 
+# Uncomment when DNS zone is properly configured:
+#
+# resource "cloudflare_workers_domain" "npm_registry" {
+#   account_id = var.account_id
+#   hostname   = var.domain
+#   service    = var.name_prefix
+#   zone_id    = var.zone_id
+# }
