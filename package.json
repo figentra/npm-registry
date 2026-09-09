@@ -14,13 +14,14 @@
 		"test:watch": "vitest watch",
 		"test:single": "vitest run",
 		"check-types": "tsc --noEmit",
-		"infra:init": "cd infrastructure/terraform/npm-registry && terraform init",
-		"infra:plan": "cd infrastructure/terraform/npm-registry && terraform plan",
-		"infra:apply": "cd infrastructure/terraform/npm-registry && terraform apply -auto-approve",
-		"infra:destroy": "cd infrastructure/terraform/npm-registry && terraform destroy",
-		"infra:deploy": "./infrastructure/terraform/npm-registry/deploy.sh",
+		"infra:init": "cd infrastructure/terraform && terraform init",
+		"infra:plan": "cd infrastructure/terraform && terraform plan",
+		"infra:apply": "cd infrastructure/terraform && terraform apply -auto-approve",
+		"infra:destroy": "cd infrastructure/terraform && terraform destroy",
+		"infra:deploy": "cd infrastructure/terraform && ./deploy.sh",
 		"infra:fmt": "cd infrastructure/terraform && terraform fmt -recursive",
-		"infra:validate": "cd infrastructure/terraform/npm-registry && terraform validate"
+		"infra:validate": "cd infrastructure/terraform && terraform validate",
+		"infra:cleanup": "./scripts/cleanup-cloudflare.sh"
 	},
 	"dependencies": {
 		"@hono/standard-validator": "^0.2.1",
