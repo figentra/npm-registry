@@ -1,4 +1,0 @@
-cloudflare_api_token = "your-cloudflare-api-token"
-cloudflare_account_id = "d861f9ac9df28b7f0b1298cc0c89bc9d"
-domain = "npm.figentra.com"
-zone_id = "your-zone-id"  # Get from Cloudflare dashboard

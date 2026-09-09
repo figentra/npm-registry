@@ -1,0 +1,22 @@
+#===============================================================================
+# NPM Registry Terraform Variables
+#===============================================================================
+# Copy this file to terraform.tfvars and fill in your values
+# DO NOT commit terraform.tfvars - it contains secrets!
+#===============================================================================
+
+# Required: Cloudflare API Token
+# Create at: https://dash.cloudflare.com/profile/api-tokens
+# Required permissions:
+#   - Zone:Read, Zone:Edit
+#   - Account:Read, Workers Scripts:Edit
+#   - KV:Edit, D1:Edit, R2:Edit
+cloudflare_api_token = "your-api-token-here"
+
+# Required: Cloudflare Account ID
+# Found in Cloudflare dashboard sidebar
+cloudflare_account_id = "d861f9ac9df28b7f0b1298cc0c89bc9d"
+
+# Required: Cloudflare Zone ID
+# Found in domain overview → API section
+cloudflare_zone_id = "your-zone-id-here"

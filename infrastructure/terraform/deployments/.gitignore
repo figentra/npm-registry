@@ -1,0 +1,39 @@
+#===============================================================================
+# Terraform Ignore Patterns
+#===============================================================================
+
+# Secret variable files
+terraform.tfvars
+*.tfvars
+!terraform.tfvars.example
+
+# Terraform state files
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+.terraform.lock.hcl
+
+# Crash logs
+crash.log
+crash.*.log
+
+# Local override files
+*.auto.tfvars
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# CLI config files
+.terraformrc
+terraform.rc
+
+# Plan files
+*.tfplan
+plan.out
+
+# Worker builds
+dist/
+*.zip
+*.tar.gz

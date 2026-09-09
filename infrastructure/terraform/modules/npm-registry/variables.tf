@@ -1,59 +1,90 @@
+/**
+ * NPM Registry - Terraform Variables
+ * @version 1.0.0
+ */
+
+# Required Variables
 variable "account_id" {
-  description = "Cloudflare Account ID"
+  description = "Cloudflare Account ID (32 characters)"
   type        = string
+  
+  validation {
+    condition     = length(var.account_id) == 32
+    error_message = "Account ID must be exactly 32 characters."
+  }
+}
+
+variable "account_name" {
+  description = "Cloudflare Account Name"
+  type        = string
+  default     = "Figentra Technologies"
 }
 
 variable "name" {
-  description = "Name of the npm registry"
+  description = "Registry name (lowercase, hyphens, numbers only)"
   type        = string
   default     = "npm-registry"
+  
+  validation {
+    condition     = can(regex("^[a-z0-9-]+$", var.name))
+    error_message = "Name must be lowercase alphanumeric with hyphens only."
+  }
 }
 
 variable "domain" {
-  description = "Custom domain for the registry"
+  description = "Custom domain for registry"
   type        = string
+  default     = "npm.figentra.com"
+  
+  validation {
+    condition     = can(regex("^[a-z0-9.-]+$", var.domain))
+    error_message = "Domain must be valid FQDN."
+  }
 }
 
 variable "zone_id" {
-  description = "Cloudflare Zone ID"
+  description = "Cloudflare Zone ID for domain"
   type        = string
 }
 
-variable "worker_script_path" {
-  description = "Path to the built worker script"
+# Optional Variables
+variable "environment" {
+  description = "Environment: development, staging, production"
   type        = string
-  default     = "../npm-registry/dist/index.js"
+  default     = "production"
+  
+  validation {
+    condition     = contains(["development", "staging", "production"], var.environment)
+    error_message = "Environment must be development, staging, or production."
+  }
 }
 
-variable "db_location" {
-  description = "Location for D1 database"
+variable "module_version" {
+  description = "Module version tag"
+  type        = string
+  default     = "1.0.0"
+}
+
+variable "d1_location" {
+  description = "D1 database location: WEUR, EEUR, ENAM, WNAM, APAC, OC"
   type        = string
   default     = "ENAM"
 }
 
 variable "r2_location" {
-  description = "Location for R2 bucket"
+  description = "R2 bucket location: WEUR, EEUR, ENAM, WNAM, APAC, OC"
   type        = string
   default     = "ENAM"
 }
 
-output "worker_url" {
-  description = "URL of the deployed worker"
-  value       = cloudflare_workers_domain.npm_registry.hostname
+variable "enable_replication" {
+  description = "Enable R2 replication"
+  type        = bool
+  default     = false
 }
 
-output "kv_id" {
-  value = cloudflare_kv_namespace.npm_registry.id
-}
-
-output "kv_preview_id" {
-  value = cloudflare_kv_namespace.npm_registry_preview.id
-}
-
-output "d1_database_id" {
-  value = cloudflare_d1_database.npm_registry.id
-}
-
-output "r2_bucket_name" {
-  value = cloudflare_r2_bucket.npm_packages.name
+variable "tags" {
+  description = "Additional resource tags"
+  type        = map(string)
+  default     = {}
 }
