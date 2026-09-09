@@ -1,3 +1,20 @@
-**/*.tfvars
-**/.terraform/
+# Terraform working directory and state
+.terraform/
+*.tfstate
 *.tfstate.*
+crash.log
+crash.*.log
+
+# Plans and local variable files
+*.tfplan
+*.plan
+terraform.tfvars
+terraform.tfvars.json
+
+# Generated Worker/build configuration
+generated/
+
+# Local/editor files
+.DS_Store
+.idea/
+.vscode/

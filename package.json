@@ -1,41 +1,45 @@
 {
-	"name": "@npflared/api",
-	"version": "0.1.0",
-	"private": true,
-	"imports": {
-		"#*": "./src/*.ts"
-	},
-	"scripts": {
-		"dev": "wrangler dev",
-		"deploy": "wrangler deploy --minify",
-		"generate-migrations": "drizzle-kit generate",
-		"migrate:local": "npx wrangler d1 migrations apply DB",
-		"migrate:prod": "npx wrangler d1 migrations apply DB --remote",
-		"test:watch": "vitest watch",
-		"test:single": "vitest run",
-		"check-types": "tsc --noEmit",
-		"infra:init": "cd infrastructure/terraform && terraform init",
-		"infra:plan": "cd infrastructure/terraform && terraform plan",
-		"infra:apply": "cd infrastructure/terraform && terraform apply -auto-approve",
-		"infra:destroy": "cd infrastructure/terraform && terraform destroy",
-		"infra:fmt": "cd infrastructure/terraform && terraform fmt -recursive",
-		"infra:validate": "cd infrastructure/terraform && terraform validate",
-		"infra:cleanup": "./scripts/cleanup-cloudflare.sh"
-	},
-	"dependencies": {
-		"@hono/standard-validator": "^0.2.1",
-		"@scalar/hono-api-reference": "^0.10.0",
-		"drizzle-orm": "^0.45.1",
-		"hono": "^4.11.3",
-		"hono-openapi": "^1.1.2",
-		"semver-regex": "^4.0.5",
-		"zod": "^4.3.5"
-	},
-	"devDependencies": {
-		"@cloudflare/vitest-pool-workers": "^0.12.1",
-		"@types/node": "^25.0.6",
-		"drizzle-kit": "^0.31.4",
-		"vitest": "3.2.4",
-		"wrangler": "^4.58.0"
-	}
+  "name": "@npflared/api",
+  "version": "0.1.0",
+  "private": true,
+  "imports": {
+    "#*": "./src/*.ts"
+  },
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy --minify",
+    "generate-migrations": "drizzle-kit generate",
+    "migrate:local": "npx wrangler d1 migrations apply DB",
+    "migrate:prod": "npx wrangler d1 migrations apply DB --remote",
+    "test:watch": "vitest watch",
+    "test:single": "vitest run",
+    "check-types": "tsc --noEmit",
+    "infra:init": "cd infrastructure/terraform && terraform init",
+    "infra:plan": "cd infrastructure/terraform && terraform plan",
+    "infra:apply": "cd infrastructure/terraform && terraform apply -auto-approve",
+    "infra:destroy": "cd infrastructure/terraform && terraform destroy",
+    "infra:fmt": "cd infrastructure/terraform && terraform fmt -recursive",
+    "infra:validate": "cd infrastructure/terraform && terraform validate",
+    "infra:cleanup": "./scripts/cleanup-cloudflare.sh",
+    "infra:import": "cd infrastructure/terraform && bash -c 'echo Example: terraform import module.npm_registry.cloudflare_d1_database.npm_registry ACCOUNT_ID/DB_ID'",
+    "infra:output": "cd infrastructure/terraform && terraform output",
+    "build:worker": "esbuild src/index.ts --bundle --outfile=dist/worker.js --format=esm --platform=neutral --target=es2022 '--define:process.env.NODE_ENV=\"production\"' --external:cloudflare:workers"
+  },
+  "dependencies": {
+    "@hono/standard-validator": "^0.2.1",
+    "@scalar/hono-api-reference": "^0.10.0",
+    "drizzle-orm": "^0.45.1",
+    "hono": "^4.11.3",
+    "hono-openapi": "^1.1.2",
+    "semver-regex": "^4.0.5",
+    "zod": "^4.3.5"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.12.1",
+    "@types/node": "^25.0.6",
+    "drizzle-kit": "^0.31.4",
+    "esbuild": "^0.28.2",
+    "vitest": "3.2.4",
+    "wrangler": "^4.58.0"
+  }
 }
