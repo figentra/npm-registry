@@ -45,12 +45,24 @@ resource "cloudflare_r2_bucket" "npm_packages" {
 }
 
 #===============================================================================
-# WORKER DOMAIN
+# WORKER SCRIPT
 #===============================================================================
 
-resource "cloudflare_workers_domain" "npm_registry" {
-  account_id = var.account_id
-  hostname   = var.domain
-  service    = var.name_prefix
-  zone_id    = var.zone_id
-}
+# Worker script is deployed via Wrangler, not Terraform
+# Terraform manages the infrastructure bindings (KV, D1, R2)
+# See: wrangler.toml for worker configuration
+
+#===============================================================================
+# WORKER DOMAIN (Custom Domain)
+#===============================================================================
+# 
+# Uncomment AFTER deploying worker via Wrangler:
+#
+# resource "cloudflare_workers_domain" "npm_registry" {
+#   account_id = var.account_id
+#   hostname   = var.domain
+#   service    = var.name_prefix
+#   zone_id    = var.zone_id
+# }
+#
+# Note: Requires the worker to be already deployed via wrangler deploy
