@@ -31,6 +31,12 @@ variable "name" {
   }
 }
 
+variable "name_prefix" {
+  description = "Prefix for resource names"
+  type        = string
+  default     = "npm-registry"
+}
+
 variable "domain" {
   description = "Custom domain for registry"
   type        = string

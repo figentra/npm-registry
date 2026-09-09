@@ -3,11 +3,6 @@
  * 
  * KV Namespaces for caching package metadata and configuration.
  * 
- * Performance characteristics:
- * - Read: < 50ms global latency
- * - Write: < 1 second consistency
- * - Storage: Up to 2GB per namespace (Enterprise plan)
- * 
  * @file data/kv.tf
  * @version 1.0.0
  */
@@ -27,7 +22,7 @@
  */
 resource "cloudflare_kv_namespace" "npm_registry" {
   account_id = var.account_id
-  title      = local.name_prefix
+  title      = var.name_prefix
   
   # Note: KV namespaces are global and replicated automatically
 }
@@ -42,5 +37,5 @@ resource "cloudflare_kv_namespace" "npm_registry" {
  */
 resource "cloudflare_kv_namespace" "npm_registry_preview" {
   account_id = var.account_id
-  title      = "${local.name_prefix}-preview"
+  title      = "${var.name_prefix}-preview"
 }
