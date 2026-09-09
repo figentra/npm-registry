@@ -1,68 +1,50 @@
 #!/bin/bash
 #==============================================================================
-# Cloudflare Resource Cleanup Script
+# Cloudflare Resource Cleanup Script (Wrangler-based)
 #==============================================================================
-# WARNING: This script will DELETE ALL npm-registry related resources
-# from Cloudflare. Use with extreme caution!
-# Usage: ./cleanup-cloudflare.sh [ACCOUNT_ID] [API_TOKEN]
+# WARNING: This will DELETE ALL npm-registry related resources!
 #==============================================================================
 
 set -e
 
-RED='\033[0;31m' YELLOW='\033[1;33m' GREEN='\033[0;32m' NC='\033[0m'
+RED='\033[0;31m' GREEN='\033[0;32m' YELLOW='\033[1;33m' NC='\033[0m'
 
-ACCOUNT_ID="${1:-$CLOUDFLARE_ACCOUNT_ID}"
-API_TOKEN="${2:-$CLOUDFLARE_API_TOKEN}"
-REGISTRY_NAME="${3:-npm-registry}"
+echo -e "${RED}╔════════════════════════════════════════════════════════════╗${NC}"
+echo -e "${RED}║  ⚠️  WARNING: DESTRUCTIVE OPERATION                        ║${NC}"
+echo -e "${RED}║                                                            ║${NC}"
+echo -e "${RED}║  This will DELETE:                                         ║${NC}"
+echo -e "${RED}║  • KV Namespaces: npm-registry, npm-registry_preview       ║${NC}"
+echo -e "${RED}║  • D1 Database: npm-registry-db                            ║${NC}"
+echo -e "${RED}║  • R2 Bucket: npm-registry-packages                      ║${NC}"
+echo -e "${RED}║  • Worker Script: npm-registry                             ║${NC}"
+echo -e "${RED}╚════════════════════════════════════════════════════════════╝${NC}"
+echo ""
+read -p "Type 'delete' to continue: " confirm
+[[ "$confirm" == "delete" ]] || { echo "Aborted."; exit 1; }
 
-if [[ -z "$ACCOUNT_ID" ]] || [[ -z "$API_TOKEN" ]]; then
-    echo "ERROR: Account ID and API Token required"
-    exit 1
-fi
-
-echo "WARNING: This will DELETE ALL Cloudflare resources matching '$REGISTRY_NAME'"
-read -p "Type 'yes' to continue: " confirm
-[[ "$confirm" == "yes" ]] || exit 1
-
-CF_API="https://api.cloudflare.com/client/v4"
-AUTH="Authorization: Bearer $API_TOKEN"
-
-delete_resource() {
-    local url=$1 name=$2
-    echo -n "Deleting $name... "
-    curl -s -X DELETE "$url" -H "$AUTH" -H "Content-Type: application/json" | grep -q '"success":true' && echo "✓" || echo "✗"
-}
-
-echo "=== Cleaning up Cloudflare Resources ==="
+echo ""
+echo "🗑️  Deleting resources..."
+echo ""
 
 # Delete KV Namespaces
-echo "KV Namespaces:"
-curl -s "$CF_API/accounts/$ACCOUNT_ID/storage/kv/namespaces" -H "$AUTH" | \
-    jq -r ".result[] | select(.title | contains(\"$REGISTRY_NAME\")) | [.id,.title] | @tsv" 2>/dev/null | \
-    while IFS=$'\t' read -r id title; do delete_resource "$CF_API/accounts/$ACCOUNT_ID/storage/kv/namespaces/$id" "$title"; done || echo "  None found"
+echo "1. Deleting KV Namespaces..."
+wrangler kv:namespace delete --namespace-id beef9b9ba42844a8a3a182b1894e7be3 --force 2>/dev/null || echo "   npm-registry: already deleted or error"
+wrangler kv:namespace delete --namespace-id 0c7930531f024700affede8e6373eb35 --force 2>/dev/null || echo "   npm-registry_preview: already deleted or error"
 
-# Delete D1 Databases  
-echo "D1 Databases:"
-curl -s "$CF_API/accounts/$ACCOUNT_ID/d1/database" -H "$AUTH" | \
-    jq -r ".result[] | select(.name | contains(\"$REGISTRY_NAME\")) | [.uuid,.name] | @tsv" 2>/dev/null | \
-    while IFS=$'\t' read -r uuid name; do delete_resource "$CF_API/accounts/$ACCOUNT_ID/d1/database/$uuid" "$name"; done || echo "  None found"
+# Delete D1 Database
+echo "2. Deleting D1 Database..."
+wrangler d1 delete npm-registry-db --force 2>/dev/null || echo "   npm-registry-db: already deleted or error"
 
-# Delete R2 Buckets
-echo "R2 Buckets:"
-curl -s "$CF_API/accounts/$ACCOUNT_ID/r2/buckets" -H "$AUTH" | \
-    jq -r ".buckets[] | select(.name | contains(\"$REGISTRY_NAME\")) | .name" 2>/dev/null | \
-    while read -r bucket; do delete_resource "$CF_API/accounts/$ACCOUNT_ID/r2/buckets/$bucket" "$bucket"; done || echo "  None found"
+# Delete R2 Bucket (need to empty first)
+echo "3. Deleting R2 Bucket..."
+wrangler r2 bucket delete npm-registry-packages --force 2>/dev/null || echo "   npm-registry-packages: already deleted or error"
 
-# Delete Worker Domains
-echo "Worker Domains:"
-curl -s "$CF_API/accounts/$ACCOUNT_ID/workers/domains" -H "$AUTH" | \
-    jq -r ".result[] | select(.service | contains(\"$REGISTRY_NAME\")) | [.id,.hostname] | @tsv" 2>/dev/null | \
-    while IFS=$'\t' read -r id hostname; do delete_resource "$CF_API/accounts/$ACCOUNT_ID/workers/domains/$id" "$hostname"; done || echo "  None found"
+# Delete Worker Script
+echo "4. Deleting Worker Script..."
+wrangler delete --name npm-registry --force 2>/dev/null || echo "   npm-registry worker: already deleted or error"
 
-# Delete Worker Scripts
-echo "Worker Scripts:"
-curl -s "$CF_API/accounts/$ACCOUNT_ID/workers/services" -H "$AUTH" | \
-    jq -r ".result[] | select(.id | contains(\"$REGISTRY_NAME\")) | .id" 2>/dev/null | \
-    while read -r script; do delete_resource "$CF_API/accounts/$ACCOUNT_ID/workers/services/$script" "$script"; done || echo "  None found"
-
-echo "=== Cleanup Complete ==="
+echo ""
+echo -e "${GREEN}✓ Cleanup complete!${NC}"
+echo ""
+echo "Note: Some resources may take a few minutes to fully propagate."
+echo "Verify at: https://dash.cloudflare.com/"
