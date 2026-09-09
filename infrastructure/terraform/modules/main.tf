@@ -54,3 +54,39 @@ output "r2_bucket_name" {
   description = "R2 bucket name"
   value       = cloudflare_r2_bucket.npm_packages.name
 }
+
+/**
+ * Worker Bindings
+ * 
+ * Complete binding configuration for wrangler.toml generation.
+ * Use this output to automatically update wrangler.toml.
+ * 
+ * @output worker_bindings
+ */
+output "worker_bindings" {
+  description = "Worker bindings configuration"
+  value = {
+    kv_namespaces = [
+      {
+        binding = "NPM_REGISTRY"
+        id      = cloudflare_kv_namespace.npm_registry.id
+      }
+    ]
+    r2_buckets = [
+      {
+        binding     = "BUCKET"
+        bucket_name = cloudflare_r2_bucket.npm_packages.name
+      }
+    ]
+    d1_databases = [
+      {
+        binding       = "DB"
+        database_id   = cloudflare_d1_database.npm_registry.id
+        database_name = cloudflare_d1_database.npm_registry.name
+      }
+    ]
+    vars = {
+      FALLBACK_REGISTRY_ENDPOINT = "https://registry.npmjs.org"
+    }
+  }
+}
