@@ -1,0 +1,30 @@
+name = "npm-registry"
+main = "src/index.ts"
+compatibility_date = "2026-01-07"
+
+compatibility_flags = [ "nodejs_compat" ]
+
+[vars]
+FALLBACK_REGISTRY_ENDPOINT = "https://registry.npmjs.org"
+
+# Custom Domain
+routes = [
+  { pattern = "npm.figentra.com", custom_domain = true }
+]
+
+# KV Namespace
+[[kv_namespaces]]
+binding = "NPM_REGISTRY"
+id = "beef9b9ba42844a8a3a182b1894e7be3"
+preview_id = "0c7930531f024700affede8e6373eb35"
+
+# R2 Bucket
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "npm-registry-packages"
+
+# D1 Database
+[[d1_databases]]
+binding = "DB"
+database_name = "npm-registry-db"
+database_id = "5ba2de9a-cbd0-4c75-a4f0-f5ead4752629"

@@ -1,0 +1,12 @@
+# .tfvars
+terraform.tfvars
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+
+# Builds
+dist/
+*.zip
