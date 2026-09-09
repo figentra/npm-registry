@@ -34,9 +34,9 @@ output "r2_bucket_name" {
   value       = cloudflare_r2_bucket.npm_packages.name
 }
 
-output "worker_domain_id" {
-  description = "Worker domain ID"
-  value       = cloudflare_workers_domain.npm_registry.id
+output "worker_custom_domain_id" {
+  description = "Worker custom domain ID"
+  value       = cloudflare_workers_custom_domain.npm_registry.id
 }
 
 output "worker_deployed" {
